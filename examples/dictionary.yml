@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars:
+    swap_file:
+       filename: "swapfile"
+       location: "/"
+       size: 512
+       status: "install"
+
+  tasks:
+    - name: "A dictionary is represented in a simple key: value form (the colon must be followed by a space). This allows us to point values as itemname.key. For example look how this text generated:"
+      debug:
+        msg: "We want to {{  swap_file.status }} file to {{ swap_file.location }}. File should be called {{ swap_file.filename }} and use {{ swap_file.size }} MB of disk space."
+
+    - name: Dictionary is a key:value(hash table), not a list. It is bad idea to use with_items here. with_items will loop through keys value names in this example.
+      debug:
+        msg: "{{ item }}"
+      with_items: "{{ swap_file }}"
+
+    - name: Dictionary is a key:value(hash table), not a list. We will get "VARIABLE IS NOT DEFINED!" if we try to get var like this.
+      debug:
+        var: "{{ item }}"
+      with_items: "{{ swap_file }}"
+
+    - name: Usage of with_dict helps here.
+      debug:
+        msg: "Current key is {{ item.key }}. Current key value is {{ item.value }}."
+      with_dict: "{{ swap_file }}"
+
+    - name: We will get variable type in this syntax, but not variable content. See next example.
+      debug:
+        var: "{{ swap_file }}"
+
+    - name: We will get complete dictionary if we request it as bare variable name. You should exclude bare variable names usage from you roles and playbooks, as it is deprecated and will be removed soon (except debug).
+      debug:
+        var: swap_file
+
