@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars:
+    soft:
+        - htop
+        - atop
+        - tshark
+        - mtr
+  tasks:
+    - name: List is just a list. Typicaly used when you need to do something with every item in it.
+      debug:
+        msg: "We can install: {{ item }}"
+      with_items: "{{ soft }}"
+
+    - name: List is not a key:value(hash table), list is just a keys. So we will get "VARIABLE IS NOT DEFINED!" here, because there is no variables like "htop".
+      debug:
+        var: "{{ item }}"
+      with_items: "{{ soft }}"
+
+    - name: We will get variable type in this syntax, but not variable content. See next example.
+      debug:
+        var: "{{ soft }}"
+
+    - name: We will get all list if we request it as bare variable name. You should exclude bare variable names usage from you roles and playbooks, as it is deprecated and will be removed soon (except debug).
+      debug:
+        var: soft
